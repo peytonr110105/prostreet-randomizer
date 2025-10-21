@@ -363,6 +363,7 @@ int main(void)
 		trackdata.ignore(256,'\n');
 		trackdata.ignore(256,'\n');
 	}
+	system("CLS");
 	cout<<"\n\nData loaded successfully.\n\n\nWelcome to the ProStreet Randomizer!\nWould you like to load your previously saved settings?\n(0 = NO, 1 = YES)\n";
 	cin>>menuopt;
 	if (menuopt != 0)
@@ -804,5 +805,6 @@ int main(void)
 	}
 	cout<<"\nRandomizer script complete! Use NFS-VLTED to install.\n";
 	cout<<"\nTo see what was randomized, open randomizer.nfsms with a text editor.\n";
+	system("PAUSE");
 	return 0;
 }
