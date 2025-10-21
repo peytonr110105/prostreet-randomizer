@@ -35,8 +35,15 @@ ifstream trackdata;
 //Holds track names split based on location
 vector<track> autobahn_gd, autopolis, chicago_gd, ebisu, infineon, leipzig, mondello_park, nevada_gd, portland, shuto_gd, texas_speedway, willow_springs;
 
-//Enables or disables DLC cars. Set to 0 by default.
-int ALLOW_DLC = 0;
+//Enables or disables DLC cars. Set to 1 by default.
+int ALLOW_DLC = 1;
+
+//Consts to note tier 1/2/3 when calling getRandomCar
+//This lets us easily add an option to override vanilla
+//tiers and pull cars from any bucket at any time
+int t1 = 1;
+int t2 = 2;
+int t3 = 3;
 
 
 //Returns a random car of the specified tier
@@ -448,6 +455,20 @@ int main(void)
 			cin>>menuopt;
 		}
 		prefs[3] = menuopt;
+		cout<<"\n\nCHAOS MODE";
+		cout<<"\nLet's get crazy.";
+		cout<<"\n0 = Off: Randomized cars will stay within the same tier";
+		cout<<"\n1 = On: Randomized cars can become anything from any tier, including DLC cars\nThis overrides tier restrictions on the Kings and starter car if previously set";
+		cout<<"\nInput Selection: ";
+		cin>>menuopt;
+		while (menuopt > 1 || menuopt < 0 || cin.fail())
+		{
+			cin.clear();
+			cin.ignore(1000000, '\n');
+			cout<<"Invalid Selection. Please try again.\n";
+			cin>>menuopt;
+		}
+		prefs[2] = menuopt;
 		//Save preferences
 		cout<<"\n\nWould you like to save your settings?";
 		cout<<"\n0 = Don't Save";
@@ -475,6 +496,13 @@ int main(void)
 	cout<<"\nRandomizing...";
 	ofstream modscript;
 	modscript.open("randomizer.nfsms");
+	//Chaos Mode
+	if (prefs[2] == 1)
+	{
+		t1 = 776;
+		t2 = 776;
+		t3 = 776;
+	}
 	//Randomize starter car
 	if (prefs[0] != 0)
 	{
@@ -484,7 +512,7 @@ int main(void)
 		}
 		else if (prefs[0] == 2)
 		{
-			modscript<<"update_field presetride player_d_day CarType Collection "<<getRandomCar(1,'n',0)<<"\n";
+			modscript<<"update_field presetride player_d_day CarType Collection "<<getRandomCar(t1,'n',0)<<"\n";
 		}
 		else
 		{
@@ -503,171 +531,171 @@ int main(void)
 		{
 			//Insert random cars
 			//Infineon t3
-			modscript<<"update_field presetride ch_t3_inf_drag CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_inf_drift CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_inf_grip2 CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_inf_grip CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_inf_drag CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_inf_drift CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_inf_grip2 CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_inf_grip CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//Nevada t1 (orig: cobalt, civic hatch, golf)
-			modscript<<"update_field presetride p_ch_t1_nvd_drag CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t1_nvd_drag2 CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t1_nvd_grip CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_nvd_drag CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_nvd_drag2 CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_nvd_grip CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
 			//Texas t1
-			modscript<<"update_field presetride p_ch_t1_tx_drag CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t1_tx_drift CarType Collection "<<getRandomCar(1,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t1_tx_grip CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t1_tx_grip2 CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_tx_drag CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_tx_drift CarType Collection "<<getRandomCar(t1,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_tx_grip CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_tx_grip2 CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
 			//Willow Springs t1
-			modscript<<"update_field presetride p_ch_t1_willow_drag CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t1_willow_drag2 CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t1_willow_drift CarType Collection "<<getRandomCar(1,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t1_willow_grip CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_willow_drag CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_willow_drag2 CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_willow_drift CarType Collection "<<getRandomCar(t1,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t1_willow_grip CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//Autopolis t2
-			modscript<<"update_field presetride p_ch_t2_autop_drift CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t2_autop_drift2 CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t2_autop_grip CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_autop_drift CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_autop_drift2 CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_autop_grip CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//Autopolis t2 CE
-			modscript<<"update_field presetride p_ch_t2_ce_autop_drift CarType Collection "<<getRandomCar(1,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t2_ce_autop_grip CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t2_ce_autop_grip2 CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_ce_autop_drift CarType Collection "<<getRandomCar(t1,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_ce_autop_grip CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_ce_autop_grip2 CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
 			//Ebisu t2
-			modscript<<"update_field presetride p_ch_t2_eb_drift CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t2_eb_grip CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t2_eb_sc CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t2_eb_sc2 CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_eb_drift CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_eb_grip CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_eb_sc CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t2_eb_sc2 CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//Autobahn t3
-			modscript<<"update_field presetride p_ch_t3_autob_drift CarType Collection "<<getRandomCar(3,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t3_autob_grip CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t3_autob_sc CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t3_autob_sc2 CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t3_autob_drift CarType Collection "<<getRandomCar(t3,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t3_autob_grip CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t3_autob_sc CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t3_autob_sc2 CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//Nevada t3
-			modscript<<"update_field presetride p_ch_t3_nev_drag CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t3_nev_drift CarType Collection "<<getRandomCar(3,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t3_nev_grip CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t3_nev_sc CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride p_ch_t3_nev_sc2 CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t3_nev_drag CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t3_nev_drift CarType Collection "<<getRandomCar(t3,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t3_nev_grip CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t3_nev_sc CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride p_ch_t3_nev_sc2 CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
 		}
 		//Randomize Opponents | Pure Random (opp. car) | Anarchy
 		if (prefs[1] == 2 || prefs[1] == 4 || prefs[1] == 5)
 		{
 			//Portland t1
-			modscript<<"update_field presetride ch_t1_ptl_drag_civichb CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t1_ptl_drag_mustgt CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t1_ptl_ptl_grip_civichb CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_ptl_drag_civichb CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_ptl_drag_mustgt CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_ptl_ptl_grip_civichb CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
 			//Texas t1
-			modscript<<"update_field presetride ch_t1_tx_drag_gti CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t1_tx_drift_350z CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t1_tx_grip_gti CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t1_tx_grip_350z CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_tx_drag_gti CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_tx_drift_350z CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_tx_grip_gti CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_tx_grip_350z CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//Willow Springs t1
-			modscript<<"update_field presetride ch_t1_willow_drag_chevelle CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t1_willow_drift_chevelle CarType Collection "<<getRandomCar(1,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t1_willow_drift_is350 CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t1_willow_grip_is350 CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_willow_drag_chevelle CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_willow_drift_chevelle CarType Collection "<<getRandomCar(t1,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_willow_drift_is350 CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_willow_grip_is350 CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//Autopolis t2 (booster pack)
-			modscript<<"update_field presetride ch_t2_autop_drift_s15 CarType Collection "<<getRandomCar(1,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t2_autop_drift_solstice CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t2_autop_grip_s15 CarType Collection "<<getRandomCar(1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_autop_drift_s15 CarType Collection "<<getRandomCar(t1,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_autop_drift_solstice CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_autop_grip_s15 CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
 			//Ebisu t2
-			modscript<<"update_field presetride ch_t2_ebisu_drift_supra CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t2_ebisu_grip_bmwm3 CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t2_ebisu_sc_bmwm3 CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t2_ebisu_sc_supra CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_ebisu_drift_supra CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_ebisu_grip_bmwm3 CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_ebisu_sc_bmwm3 CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_ebisu_sc_supra CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//"Mondello Park" (Autopolis t2)
-			modscript<<"update_field presetride ch_t2_mond_drift_g35 CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t2_mond_drift_gto CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t2_mond_grip_gto CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_mond_drift_g35 CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_mond_drift_gto CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t2_mond_grip_gto CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//Infineon t3
-			modscript<<"update_field presetride ch_t3_infineon_drag_cayman CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_infineon_drift_nsx CarType Collection "<<getRandomCar(2,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_infineon_grip_cayman CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_infineon_grip_nsx CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_infineon_drag_cayman CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_infineon_drift_nsx CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_infineon_grip_cayman CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_infineon_grip_nsx CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
 			//Nevada t3
-			modscript<<"update_field presetride ch_t3_nevada_drag_z06 CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_nevada_drift_z06 CarType Collection "<<getRandomCar(3,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_nevada_grip_rs4 CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_nevada_sc_rs4 CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_nevada_sc_z06 CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_nevada_drag_z06 CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_nevada_drift_z06 CarType Collection "<<getRandomCar(t3,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_nevada_grip_rs4 CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_nevada_sc_rs4 CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_nevada_sc_z06 CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
 			//Autobahn t3
-			modscript<<"update_field presetride ch_t3_autob_drift_viper CarType Collection "<<getRandomCar(3,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_autob_grip_skyline CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_autob_sc_skyline CarType Collection "<<getRandomCar(2,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t3_autob_sc_viper CarType Collection "<<getRandomCar(3,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_autob_drift_viper CarType Collection "<<getRandomCar(t3,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_autob_grip_skyline CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_autob_sc_skyline CarType Collection "<<getRandomCar(t2,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t3_autob_sc_viper CarType Collection "<<getRandomCar(t3,'y',ALLOW_DLC)<<"\n";
 		}
 		if (prefs[1] == 3)
 		{
 			//Insert random cars
 			//Infineon t3
-			string t3_inf_drag = getRandomCar(2,'n',ALLOW_DLC);
-			string t3_inf_drift = getRandomCar(2,'y',ALLOW_DLC);
-			string t3_inf_grip2 = getRandomCar(2,'n',ALLOW_DLC);
-			string t3_inf_grip = getRandomCar(2,'n',ALLOW_DLC);
+			string t3_inf_drag = getRandomCar(t2,'n',ALLOW_DLC);
+			string t3_inf_drift = getRandomCar(t2,'y',ALLOW_DLC);
+			string t3_inf_grip2 = getRandomCar(t2,'n',ALLOW_DLC);
+			string t3_inf_grip = getRandomCar(t2,'n',ALLOW_DLC);
 			modscript<<"update_field presetride ch_t3_inf_drag CarType Collection "<<t3_inf_drag<<"\n";
 			modscript<<"update_field presetride ch_t3_inf_drift CarType Collection "<<t3_inf_drift<<"\n";
 			modscript<<"update_field presetride ch_t3_inf_grip2 CarType Collection "<<t3_inf_grip2<<"\n";
 			modscript<<"update_field presetride ch_t3_inf_grip CarType Collection "<<t3_inf_grip<<"\n";
 			//Nevada t1 (orig: cobalt, civic hatch, golf)
-			string t1_nvd_drag = getRandomCar(1,'n',ALLOW_DLC);
-			string t1_nvd_drag2 = getRandomCar(1,'n',ALLOW_DLC);
-			string t1_nvd_grip = getRandomCar(1,'n',ALLOW_DLC);
+			string t1_nvd_drag = getRandomCar(t1,'n',ALLOW_DLC);
+			string t1_nvd_drag2 = getRandomCar(t1,'n',ALLOW_DLC);
+			string t1_nvd_grip = getRandomCar(t1,'n',ALLOW_DLC);
 			modscript<<"update_field presetride p_ch_t1_nvd_drag CarType Collection "<<t1_nvd_drag<<"\n";
 			modscript<<"update_field presetride p_ch_t1_nvd_drag2 CarType Collection "<<t1_nvd_drag2<<"\n";
 			modscript<<"update_field presetride p_ch_t1_nvd_grip CarType Collection "<<t1_nvd_grip<<"\n";
 			//Texas t1
-			string t1_tx_drag = getRandomCar(1,'n',ALLOW_DLC);
-			string t1_tx_drift = getRandomCar(2,'y',ALLOW_DLC);
-			string t1_tx_grip = getRandomCar(1,'n',ALLOW_DLC);
-			string t1_tx_grip2 = getRandomCar(2,'n',ALLOW_DLC);
+			string t1_tx_drag = getRandomCar(t1,'n',ALLOW_DLC);
+			string t1_tx_drift = getRandomCar(t2,'y',ALLOW_DLC);
+			string t1_tx_grip = getRandomCar(t1,'n',ALLOW_DLC);
+			string t1_tx_grip2 = getRandomCar(t2,'n',ALLOW_DLC);
 			modscript<<"update_field presetride p_ch_t1_tx_drag CarType Collection "<<t1_tx_drag<<"\n";
 			modscript<<"update_field presetride p_ch_t1_tx_drift CarType Collection "<<t1_tx_drift<<"\n";
 			modscript<<"update_field presetride p_ch_t1_tx_grip CarType Collection "<<t1_tx_grip<<"\n";
 			modscript<<"update_field presetride p_ch_t1_tx_grip2 CarType Collection "<<t1_tx_grip2<<"\n";
 			//Willow Springs t1
-			string t1_willow_drag = getRandomCar(1,'n',ALLOW_DLC);
-			string t1_willow_drag2 = getRandomCar(2,'n',ALLOW_DLC);
-			string t1_willow_drift = getRandomCar(1,'y',ALLOW_DLC);
-			string t1_willow_grip = getRandomCar(2,'n',ALLOW_DLC);
+			string t1_willow_drag = getRandomCar(t1,'n',ALLOW_DLC);
+			string t1_willow_drag2 = getRandomCar(t2,'n',ALLOW_DLC);
+			string t1_willow_drift = getRandomCar(t1,'y',ALLOW_DLC);
+			string t1_willow_grip = getRandomCar(t2,'n',ALLOW_DLC);
 			modscript<<"update_field presetride p_ch_t1_willow_drag CarType Collection "<<t1_willow_drag<<"\n";
 			modscript<<"update_field presetride p_ch_t1_willow_drag2 CarType Collection "<<t1_willow_drag2<<"\n";
 			modscript<<"update_field presetride p_ch_t1_willow_drift CarType Collection "<<t1_willow_drift<<"\n";
 			modscript<<"update_field presetride p_ch_t1_willow_grip CarType Collection "<<t1_willow_grip<<"\n";
 			//Autopolis t2
-			string t2_autop_drift = getRandomCar(2,'y',ALLOW_DLC);
-			string t2_autop_drift2 = getRandomCar(2,'y',ALLOW_DLC);
-			string t2_autop_grip = getRandomCar(2,'n',ALLOW_DLC);
+			string t2_autop_drift = getRandomCar(t2,'y',ALLOW_DLC);
+			string t2_autop_drift2 = getRandomCar(t2,'y',ALLOW_DLC);
+			string t2_autop_grip = getRandomCar(t2,'n',ALLOW_DLC);
 			modscript<<"update_field presetride p_ch_t2_autop_drift CarType Collection "<<t2_autop_drift<<"\n";
 			modscript<<"update_field presetride p_ch_t2_autop_drift2 CarType Collection "<<t2_autop_drift2<<"\n";
 			modscript<<"update_field presetride p_ch_t2_autop_grip CarType Collection "<<t2_autop_grip<<"\n";
 			//Autopolis t2 CE
-			string t2_autop_ce_drift = getRandomCar(1,'y',ALLOW_DLC);
-			string t2_autop_ce_grip = getRandomCar(1,'n',ALLOW_DLC);
-			string t2_autop_ce_grip2 = getRandomCar(2,'n',ALLOW_DLC);
+			string t2_autop_ce_drift = getRandomCar(t1,'y',ALLOW_DLC);
+			string t2_autop_ce_grip = getRandomCar(t1,'n',ALLOW_DLC);
+			string t2_autop_ce_grip2 = getRandomCar(t2,'n',ALLOW_DLC);
 			modscript<<"update_field presetride p_ch_t2_ce_autop_drift CarType Collection "<<t2_autop_ce_drift<<"\n";
 			modscript<<"update_field presetride p_ch_t2_ce_autop_grip CarType Collection "<<t2_autop_ce_grip<<"\n";
 			modscript<<"update_field presetride p_ch_t2_ce_autop_grip2 CarType Collection "<<t2_autop_ce_grip2<<"\n";
 			//Ebisu t2
-			string t2_eb_drift = getRandomCar(2,'y',ALLOW_DLC);
-			string t2_eb_grip = getRandomCar(2,'n',ALLOW_DLC);
-			string t2_eb_sc = getRandomCar(2,'n',ALLOW_DLC);
-			string t2_eb_sc2 = getRandomCar(2,'n',ALLOW_DLC);
+			string t2_eb_drift = getRandomCar(t2,'y',ALLOW_DLC);
+			string t2_eb_grip = getRandomCar(t2,'n',ALLOW_DLC);
+			string t2_eb_sc = getRandomCar(t2,'n',ALLOW_DLC);
+			string t2_eb_sc2 = getRandomCar(t2,'n',ALLOW_DLC);
 			modscript<<"update_field presetride p_ch_t2_eb_drift CarType Collection "<<t2_eb_drift<<"\n";
 			modscript<<"update_field presetride p_ch_t2_eb_grip CarType Collection "<<t2_eb_grip<<"\n";
 			modscript<<"update_field presetride p_ch_t2_eb_sc CarType Collection "<<t2_eb_sc<<"\n";
 			modscript<<"update_field presetride p_ch_t2_eb_sc2 CarType Collection "<<t2_eb_sc2<<"\n";
 			//Autobahn t3
-			string t3_autob_drift = getRandomCar(3,'y',ALLOW_DLC);
-			string t3_autob_grip = getRandomCar(3,'n',ALLOW_DLC);
-			string t3_autob_sc = getRandomCar(3,'n',ALLOW_DLC);
-			string t3_autob_sc2 = getRandomCar(3,'n',ALLOW_DLC);
+			string t3_autob_drift = getRandomCar(t3,'y',ALLOW_DLC);
+			string t3_autob_grip = getRandomCar(t3,'n',ALLOW_DLC);
+			string t3_autob_sc = getRandomCar(t3,'n',ALLOW_DLC);
+			string t3_autob_sc2 = getRandomCar(t3,'n',ALLOW_DLC);
 			modscript<<"update_field presetride p_ch_t3_autob_drift CarType Collection "<<t3_autob_drift<<"\n";
 			modscript<<"update_field presetride p_ch_t3_autob_grip CarType Collection "<<t3_autob_grip<<"\n";
 			modscript<<"update_field presetride p_ch_t3_autob_sc CarType Collection "<<t3_autob_sc<<"\n";
 			modscript<<"update_field presetride p_ch_t3_autob_sc2 CarType Collection "<<t3_autob_sc2<<"\n";
 			//Nevada t3
-			string t3_nev_drag = getRandomCar(3,'n',ALLOW_DLC);
-			string t3_nev_drift = getRandomCar(3,'y',ALLOW_DLC);
-			string t3_nev_grip = getRandomCar(3,'n',ALLOW_DLC);
-			string t3_nev_sc = getRandomCar(3,'n',ALLOW_DLC);
-			string t3_nev_sc2 = getRandomCar(3,'n',ALLOW_DLC);
+			string t3_nev_drag = getRandomCar(t3,'n',ALLOW_DLC);
+			string t3_nev_drift = getRandomCar(t3,'y',ALLOW_DLC);
+			string t3_nev_grip = getRandomCar(t3,'n',ALLOW_DLC);
+			string t3_nev_sc = getRandomCar(t3,'n',ALLOW_DLC);
+			string t3_nev_sc2 = getRandomCar(t3,'n',ALLOW_DLC);
 			modscript<<"update_field presetride p_ch_t3_nev_drag CarType Collection "<<t3_nev_drag<<"\n";
 			modscript<<"update_field presetride p_ch_t3_nev_drift CarType Collection "<<t3_nev_drift<<"\n";
 			modscript<<"update_field presetride p_ch_t3_nev_grip CarType Collection "<<t3_nev_grip<<"\n";
@@ -743,13 +771,13 @@ int main(void)
 	{
 		if (prefs[3] == 1 || 3)
 		{
-			modscript<<"update_field presetride drag_king CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride drift_king CarType Collection "<<getRandomCar(3,'y',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride grip_king CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride sc_king CarType Collection "<<getRandomCar(3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride drag_king CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride drift_king CarType Collection "<<getRandomCar(t3,'y',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride grip_king CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride sc_king CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
 			if (prefs[3] == 1)
 			{
-				string ryo = getRandomCar(3,'y',ALLOW_DLC);
+				string ryo = getRandomCar(t3,'y',ALLOW_DLC);
 				modscript<<"update_field presetride showdown_king_final_drag CarType Collection "<<ryo<<"\n";
 				modscript<<"update_field presetride showdown_king_final_drift CarType Collection "<<ryo<<"\n";
 				modscript<<"update_field presetride showdown_king_final_grip CarType Collection "<<ryo<<"\n";
