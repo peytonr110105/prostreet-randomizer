@@ -459,7 +459,7 @@ int main(void)
 		cout<<"\n\nCHAOS MODE";
 		cout<<"\nLet's get crazy.";
 		cout<<"\n0 = Off: Randomized cars will stay within the same tier";
-		cout<<"\n1 = On: Randomized cars can become anything from any tier, including DLC cars\nThis overrides tier restrictions on the Kings and starter car if previously set";
+		cout<<"\n1 = On: Randomized cars can become anything from any tier\nThis overrides tier restrictions on the Kings and starter car if previously set\nNOTE: This will wildly imbalance Drag races";
 		cout<<"\nInput Selection: ";
 		cin>>menuopt;
 		while (menuopt > 1 || menuopt < 0 || cin.fail())
@@ -581,7 +581,7 @@ int main(void)
 			//Portland t1
 			modscript<<"update_field presetride ch_t1_ptl_drag_civichb CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
 			modscript<<"update_field presetride ch_t1_ptl_drag_mustgt CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
-			modscript<<"update_field presetride ch_t1_ptl_ptl_grip_civichb CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
+			modscript<<"update_field presetride ch_t1_ptl_grip_civichb CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
 			//Texas t1
 			modscript<<"update_field presetride ch_t1_tx_drag_gti CarType Collection "<<getRandomCar(t1,'n',ALLOW_DLC)<<"\n";
 			modscript<<"update_field presetride ch_t1_tx_drift_350z CarType Collection "<<getRandomCar(t2,'y',ALLOW_DLC)<<"\n";
@@ -770,7 +770,7 @@ int main(void)
 	//Randomize Kings
 	if (prefs[3] != 0)
 	{
-		if (prefs[3] == 1 || 3)
+		if (prefs[3] == 1 || prefs[3] == 3)
 		{
 			modscript<<"update_field presetride drag_king CarType Collection "<<getRandomCar(t3,'n',ALLOW_DLC)<<"\n";
 			modscript<<"update_field presetride drift_king CarType Collection "<<getRandomCar(t3,'y',ALLOW_DLC)<<"\n";
@@ -786,7 +786,7 @@ int main(void)
 				modscript<<"update_field presetride showdown_king_playable CarType Collection "<<ryo<<"\n";
 			}
 		}
-		else if (prefs[3] == 2 || 4)
+		else if (prefs[3] == 2 || prefs[3] == 4)
 		{
 			modscript<<"update_field presetride drag_king CarType Collection "<<getRandomCar(776,'n',ALLOW_DLC)<<"\n";
 			modscript<<"update_field presetride drift_king CarType Collection "<<getRandomCar(776,'y',ALLOW_DLC)<<"\n";
